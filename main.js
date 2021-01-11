@@ -8,7 +8,6 @@ fetch("COUNTY.svg")
 	.then(()=>{
 		addFeatures()
 	})
-//var svg = d3.select(document.getElementsByTagName("iframe")[0].contentDocument)
 function addFeatures(){
 	addClick()
 	addZoom()
@@ -31,20 +30,20 @@ function addZoom(){
 	let k = 2//1.6
 	let x = 0//200
 	let y = 0//130
-	d3.select("svg").attr(
+	d3.select("g").attr(
 		"transform",
 		d3.zoomIdentity
 		.scale(k).translate(x,y)
 	)
-	d3.select("#map").call(
+	d3.select("svg").call(
 		d3.zoom()
 		.on("zoom", e=>{
-			d3.select("svg").attr(
+			d3.select("g").attr(
 				"transform",
 				e.transform
 				.scale(k).translate(x,y)
 			)
-			console.log(e.transform)
+			console.log(e)
 		})
 	)
 }
