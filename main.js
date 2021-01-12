@@ -8,10 +8,30 @@ fetch("COUNTY.svg")
 	.then(()=>{
 		addFeatures()
 	})
+var question = {
+	q: "",
+	a: "",
+	check: function(){
+		if(this.q===this.a){
+			questioner()
+			return true
+		}
+		return false
+	}
+}
 function addFeatures(){
 	addClick()
 	addZoom()
 	addButtons()
+	questioner()
+}
+function questioner(){
+	console.log("questioning...")
+	//get all county names
+	let names = Array(...document.getElementsByTagName("path")).map(e=>e.id)
+	let rnd = names[Math.floor(Math.random()*names.length)]
+	question.q = rnd
+	d3.select("div#div").text(question.q)
 }
 function addClick(){
 	d3.selectAll("path")
@@ -22,14 +42,19 @@ function addClick(){
 			e.target.setAttribute("fill","black")
 		})
 		.on("click", e=>{
-			d3.select("#div")
-				.text(e.target.id)
+			//d3.select("#div")
+			//	.text(e.target.id)
+			question.a = e.target.id
+			if(question.check())
+				console.log("you got it right")
+			else
+				console.log("wrong")
 		})
 }
 function addZoom(){
-	let k = 2//1.6
-	let x = 0//200
-	let y = 0//130
+	let k = 1.6
+	let x = -150//200
+	let y = 10//130
 	d3.select("g").attr(
 		"transform",
 		d3.zoomIdentity
@@ -43,7 +68,6 @@ function addZoom(){
 				e.transform
 				.scale(k).translate(x,y)
 			)
-			console.log(e)
 		})
 	)
 }
