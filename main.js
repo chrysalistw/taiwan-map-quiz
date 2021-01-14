@@ -1,60 +1,118 @@
 import "./d3/d3.min.js"
 
-fetch("COUNTY.svg")
-	.then(res=>res.text())
-	.then(text=>{
-		document.querySelector("div").innerHTML = text
-	})
-	.then(()=>{
-		addFeatures()
-	})
+function start(){
+	console.log("start!")
+	fetch("COUNTY.svg")
+		.then(res=>res.text())
+		.then(text=>{
+			document.querySelector("div").innerHTML = text
+		})
+		.then(()=>{
+			d3.selectAll("path")
+				.attr("fill", fill)
+				.attr("stroke", stroke)
+				.attr("stroke-width", "0.1")
+			addFeatures()
+		})
+}
+start()
+var fill = "#CCC"
+var stroke = "black"
 var question = {
 	q: "",
 	a: "",
+	queue: undefined,
+	num: 0,
+	setQueue: function(){
+			function shuffle(a){
+				for(let i=a.length-1; i>0; i--){
+					let rand = Math.floor(i*Math.random())
+					let t = a[i]
+					a[i] = a[rand]
+					a[rand] = t
+				}
+				return a
+			}
+			if(!question.queue){
+				let names = Array(...document.getElementsByTagName("path")).map(e=>e.id)
+				question.queue = shuffle(names)
+			}
+	},
+	questioner: function(){
+		console.log(this.num, this.queue.length)
+		if(this.num >= this.queue.length){
+				over()
+				return
+		}
+		this.q = this.queue[this.num]
+		console.log(this.q, question.q)
+		d3.select("div#div").text(question.q)
+	},
 	check: function(){
 		if(this.q===this.a){
-			questioner()
+			rightColor(this.q)
+			this.num += 1
 			return true
 		}
 		return false
 	}
 }
+function over(){
+	d3.select("div#div").text("結束")
+	d3.select("div#div").append("div").attr("id", "restart")
+		.text("\u00A0↺\u00A0")
+		.style("text-align", "center")
+		.style("width", "35px").style("height", "35px")
+		.style("font-size", "30px")
+		.style("line-height", "35px")
+		.style("display", "inline")
+		.style("border", "2px solid black")
+		.style("border-radius", "25px")
+		.style("background", "red")
+		.on("click", e=>{
+			start()
+		})
+}
 function addFeatures(){
 	addClick()
 	addZoom()
+	d3.select("div#div").remove()
 	addButtons()
-	questioner()
+	question.q = ""
+	question.a = ""
+	question.num = 0
+	question.queue = undefined
+	question.setQueue()
+	question.questioner()
+	console.log(question)
 }
-function questioner(){
-	console.log("questioning...")
-	//get all county names
-	let names = Array(...document.getElementsByTagName("path")).map(e=>e.id)
-	let rnd = names[Math.floor(Math.random()*names.length)]
-	question.q = rnd
-	d3.select("div#div").text(question.q)
+function rightColor(id){
+	d3.select("#"+id).attr("fill", "orange").attr("class", "pass")
 }
 function addClick(){
 	d3.selectAll("path")
 		.on("mouseover", e=>{
-			e.target.setAttribute("fill","red")
+			if(e.target.getAttribute("class")=="pass") return
+			d3.select(e.target).attr("fill", "red")
 		})
 		.on("mouseout", e=>{
-			e.target.setAttribute("fill","black")
+			if(e.target.getAttribute("class")=="pass") return 
+			e.target.setAttribute("fill", fill)
 		})
 		.on("click", e=>{
-			//d3.select("#div")
-			//	.text(e.target.id)
+			if(e.target.getAttribute("class")=="pass") return 
 			question.a = e.target.id
-			if(question.check())
-				console.log("you got it right")
+			if(question.check()){
+				question.questioner()
+			}
 			else
-				console.log("wrong")
+				e.target.setAttribute("fill", "violet")
 		})
 }
 function addZoom(){
 	let k = 1.6
 	let x = -150//200
-	let y = 10//130
+	let y = 50//130
 	d3.select("g").attr(
 		"transform",
 		d3.zoomIdentity
@@ -74,20 +132,18 @@ function addZoom(){
 function addButtons(){
 	d3.select("body").append("div")
 		.attr("id", "div")
-		.text("DIV")
 		.style("text-align", "center")
-		.style("line-height", "10vh")
 		.style("font-size", "50px")
 		.style("position", "fixed")
 		.style("display", "block")
 		.style("border", "2px solid #0FC")
 		.style("border-radius", "25px")
 		.style("background", "#0FC")
-		.style("width", "25vw").style("height", "10vh")
 		.style("min-width", "250px")
 		.style("max-width", "500px")
-		.style("max-height", "100px")
+		.style("max-height", "70px")
+		.style("width", "250px").style("height", "70px")
 		.style("left", "8vh")
 		.style("top", "15%")
-		.style("margin", "auto 0")
+		.style("line-height", "70px")
 }

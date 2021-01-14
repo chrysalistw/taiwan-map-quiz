@@ -13,5 +13,6 @@ this solution is without styling.
 1. `d3.geoMercator().rotate([-121,24]).scale(2000)`
 
 ## viva mapshaper.org !
-1. `$ -o format=svg id-field=COUNTYNAME`
-see `$ -help o`
+1. simplify to 25%
+2. `$ -o format=svg id-field=COUNTYNAME`
+  see `$ -help o`
