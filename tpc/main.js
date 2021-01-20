@@ -1,4 +1,4 @@
-import "/d3/d3.min.js"
+import "../d3/d3.min.js"
 
 function start(){
 	console.log("start!")
