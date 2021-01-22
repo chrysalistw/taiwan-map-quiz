@@ -1,21 +1,21 @@
 import "./d3/d3.min.js"
 
-function start(){
-	console.log("start!")
-	fetch("COUNTY.svg")
-		.then(res=>res.text())
-		.then(text=>{
-			document.querySelector("div").innerHTML = text
-		})
-		.then(()=>{
-			d3.selectAll("path")
-				.attr("fill", fill)
-				.attr("stroke", stroke)
-				.attr("stroke-width", "0.1")
-			addFeatures()
-		})
+startGame("COUNTY.svg", {k: 1.6, x: -150, y: 50})
+async function startGame(filename, trans){
+	await fetchSVG(filename)
+	addFeatures()
+	console.log(trans)
 }
-start()
+function fetchSVG(filename){
+	return new Promise(resolve=>{
+		fetch(filename)
+			.then(res=>res.text())
+			.then(text=>{
+				document.querySelector("div").innerHTML = text
+				resolve()
+			})
+	})
+}
 var fill = "#CCC"
 var stroke = "black"
 var question = {
@@ -87,26 +87,26 @@ function addFeatures(){
 	console.log(question)
 }
 function rightColor(id){
-	d3.select("#"+id).attr("fill", "orange").attr("class", "pass")
+	d3.select("#"+id).attr("class", "right")
 }
 function addClick(){
 	d3.selectAll("path")
-		.on("mouseover", e=>{
-			if(e.target.getAttribute("class")=="pass") return
-			d3.select(e.target).attr("fill", "red")
+		.on("mouseover", function(e){
+			if(d3.select(this).attr("class")=="right") return
+			d3.select(this).attr("class", "select")
 		})
-		.on("mouseout", e=>{
-			if(e.target.getAttribute("class")=="pass") return 
-			e.target.setAttribute("fill", fill)
+		.on("mouseout", function(e){
+			if(d3.select(this).attr("class")=="right") return
+			d3.select(this).attr("class", "")
 		})
-		.on("click", e=>{
-			if(e.target.getAttribute("class")=="pass") return 
+		.on("click", function(e){
+			if(d3.select(this).attr("class")=="right") return
 			question.a = e.target.id
 			if(question.check()){
 				question.questioner()
 			}
 			else
-				e.target.setAttribute("fill", "violet")
+				d3.select(this).attr("class", "wrong")
 		})
 }
 function addZoom(){
