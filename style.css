@@ -12,3 +12,6 @@ path.right {
 path.wrong {
 	fill: violet;
 }
+div {
+	cursor: default;
+}
