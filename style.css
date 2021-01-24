@@ -1,0 +1,17 @@
+path {
+	fill: #CCC;
+	stroke: black;
+	stroke-width: 0.1;
+}
+path.select {
+	fill: red;
+}
+path.right {
+	fill: orange;
+}
+path.wrong {
+	fill: violet;
+}
+div {
+	cursor: default;
+}
