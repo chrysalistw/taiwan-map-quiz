@@ -1,6 +1,3 @@
-import "./d3/d3.min.js"
-export default startGame
-
 async function startGame(filename, viewBox){
 	await fetchSVG(filename)
 	addFeatures()
@@ -135,7 +132,8 @@ function addButtons(){
 		.style("max-width", "500px")
 		.style("max-height", "70px")
 		.style("width", "250px").style("height", "70px")
-		.style("left", "8vh")
-		.style("top", "15%")
+		.style("left", "50%")
+		.style("top", "50px")
+		.style("transform", "translate(-50%, 0)")
 		.style("line-height", "70px")
 }
