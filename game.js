@@ -59,7 +59,7 @@ var question = {
 }
 function over(){
 	let score = question.queue.length/question.numOfClick*100
-	score = score.toFixed(2).split("0")[0]
+	score = score==100?100:score.toFixed(2).split("0")[0]
 	d3.select("#text").text("命中率：")
 	d3.select("#problem").text(score+"%")
 	d3.select("#container").append("div").attr("id", "restart")
