@@ -24,6 +24,7 @@ var question = {
 	a: "",
 	queue: undefined,
 	num: 0,
+	numOfClick: 0,
 	setQueue: function(){
 			function shuffle(a){
 				for(let i=a.length-1; i>0; i--){
@@ -46,7 +47,6 @@ var question = {
 		}
 		this.q = this.queue[this.num]
 		d3.select("#problem").text(question.q)
-		console.log(d3.select("#problem"))
 	},
 	check: function(){
 		if(this.q===this.a){
@@ -58,21 +58,26 @@ var question = {
 	}
 }
 function over(){
-	d3.select("#problem").text("結束")
-	d3.select("#problem").append("div").attr("id", "restart")
-		.text("\u00A0↺\u00A0")
+	let score = question.queue.length/question.numOfClick*100
+	score = score.toFixed(2).split("0")[0]
+	d3.select("#text").text("命中率：")
+	d3.select("#problem").text(score+"%")
+	d3.select("#container").append("div").attr("id", "restart")
+		.text("↺")
 		.style("text-align", "center")
+		.style("position", "absolute")
 		.style("width", "35px").style("height", "35px")
+		.style("left", "270px").style("top", "17.5px")
 		.style("font-size", "30px")
 		.style("line-height", "35px")
-		.style("display", "inline")
+		.style("display", "block")
 		.style("border", "2px solid black")
 		.style("border-radius", "25px")
 		.style("background", "red")
 		.on("click", e=>{
 			restart()
 		})
-	d3.select("#text").remove()
+	console.log(question.numOfClick, question.queue.length)
 }
 function addFeatures(){
 	addClick()
@@ -81,6 +86,7 @@ function addFeatures(){
 	question.q = ""
 	question.a = ""
 	question.num = 0
+	question.numOfClick = 0
 	question.queue = undefined
 	question.setQueue()
 	question.questioner()
@@ -100,6 +106,7 @@ function addClick(){
 		})
 		.on("click", function(e){
 			if(d3.select(this).attr("class")=="right") return
+			question.numOfClick += 1
 			question.a = e.target.id
 			if(question.check()){
 				question.questioner()
