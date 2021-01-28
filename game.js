@@ -45,7 +45,8 @@ var question = {
 				return
 		}
 		this.q = this.queue[this.num]
-		d3.select("div#div").text(question.q)
+		d3.select("#problem").text(question.q)
+		console.log(d3.select("#problem"))
 	},
 	check: function(){
 		if(this.q===this.a){
@@ -57,8 +58,8 @@ var question = {
 	}
 }
 function over(){
-	d3.select("div#div").text("結束")
-	d3.select("div#div").append("div").attr("id", "restart")
+	d3.select("#problem").text("結束")
+	d3.select("#problem").append("div").attr("id", "restart")
 		.text("\u00A0↺\u00A0")
 		.style("text-align", "center")
 		.style("width", "35px").style("height", "35px")
@@ -71,10 +72,11 @@ function over(){
 		.on("click", e=>{
 			restart()
 		})
+	d3.select("#text").remove()
 }
 function addFeatures(){
 	addClick()
-	d3.select("div#div").remove()
+	d3.select("div#container").remove()
 	addButtons()
 	question.q = ""
 	question.a = ""
@@ -120,20 +122,25 @@ function addZoom(vb){
 }
 function addButtons(){
 	d3.select("body").append("div")
-		.attr("id", "div")
-		.style("text-align", "center")
-		.style("font-size", "50px")
+		.attr("id", "container")
 		.style("position", "fixed")
 		.style("display", "block")
 		.style("border", "2px solid #0FC")
 		.style("border-radius", "25px")
 		.style("background", "#0FC")
-		.style("min-width", "250px")
-		.style("max-width", "500px")
-		.style("max-height", "70px")
 		.style("width", "250px").style("height", "70px")
 		.style("left", "50%")
 		.style("top", "50px")
 		.style("transform", "translate(-50%, 0)")
+	d3.select("#container").append("div")
+		.attr("id", "problem")
+		.style("text-align", "center")
+		.style("font-size", "50px")
 		.style("line-height", "70px")
+	d3.select("#container").append("div")
+		.attr("id", "text")
+		.text("請找出：")
+		.style("font-size", "20px")
+		.style("position", "absolute")
+		.style("top", "-30px")
 }
