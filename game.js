@@ -96,6 +96,9 @@ function rightColor(id){
 }
 function addClick(){
 	d3.selectAll("path")
+		.on("mousedown", function(e){
+			e.stopPropagation()
+		})
 		.on("mouseover", function(e){
 			if(d3.select(this).attr("class")=="right") return
 			d3.select(this).attr("class", "select")
